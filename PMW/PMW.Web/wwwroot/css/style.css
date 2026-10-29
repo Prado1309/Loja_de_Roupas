@@ -1,0 +1,124 @@
+:root {
+  --bg: #161719;
+  --panel: #222428;
+  --line: #3a3e46;
+  --fg: #f2f4f7;
+  --mute: #9ba3b0;
+  --blue: #2f6bff;
+  --blue-hi: #6d95ff;
+  --display: "Anton", Impact, "Arial Narrow", sans-serif;
+  --body: "Archivo", "Segoe UI", Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  min-height: 100vh; overflow-x: hidden;
+  background: var(--bg); color: var(--fg); font-family: var(--body);
+}
+/* textura de grão por cima de tudo */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: .07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 3px solid var(--blue-hi); outline-offset: 3px; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 1.25rem; }
+
+/* ---------- topo ---------- */
+.header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .7rem 1.5rem; background: var(--bg); border-bottom: 2px solid var(--fg);
+}
+.logo { font: 400 2.4rem/1 var(--display); letter-spacing: 2px; color: var(--blue); -webkit-text-stroke: 2px #0b1534; paint-order: stroke fill; }
+.header nav { display: flex; gap: 1.8rem; font: 400 1.1rem var(--display); text-transform: uppercase; letter-spacing: 1px; }
+.header nav a:hover { color: var(--blue-hi); }
+
+/* ---------- hero ---------- */
+.hero { position: relative; padding: 3.5rem 0 3.5rem; }
+.hero h1 { font: 400 clamp(3.6rem, 13vw, 10.5rem)/.88 var(--display); text-transform: uppercase; }
+.btn {
+  display: inline-block; margin-top: 2rem; padding: .9rem 2.2rem;
+  background: var(--fg); color: var(--bg); font: 400 1.25rem var(--display); text-transform: uppercase; letter-spacing: 1px;
+  box-shadow: 5px 5px 0 var(--blue); transition: transform .15s, box-shadow .15s;
+}
+.btn:hover { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--blue); }
+.sticker {
+  position: absolute; right: 2%; top: 3rem; width: 9rem; aspect-ratio: 1; padding: 1rem;
+  display: grid; place-items: center; text-align: center; border-radius: 50%;
+  background: var(--blue); border: 3px solid var(--fg); transform: rotate(12deg);
+  font: 400 1.2rem/1.05 var(--display); text-transform: uppercase;
+}
+
+/* ---------- faixa de avisos (fita) ---------- */
+.tape { margin: 0 -3vw; overflow: hidden; background: var(--blue); border-block: 2px solid var(--fg); transform: rotate(-1.5deg); }
+.faixa { display: flex; width: max-content; animation: rola 50s linear infinite; }
+.grupo { display: flex; }
+.grupo span { display: flex; align-items: center; padding: .75rem 0 .75rem 1.6rem; white-space: nowrap; font-size: .95rem; }
+.grupo span b { font-weight: 800; text-transform: uppercase; margin-right: .35em; }
+.grupo span::after { content: ""; width: .5rem; height: .5rem; margin-left: 1.6rem; background: var(--fg); transform: rotate(45deg); }
+@keyframes rola { to { transform: translateX(-50%); } }
+
+/* ---------- cards de categoria (home) ---------- */
+.cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; padding: 3.5rem 0; }
+.cat { display: block; }
+.img {
+  position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--panel);
+  border: 2px solid var(--fg); transition: transform .15s, box-shadow .15s;
+}
+.img::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(transparent 50%, rgba(22,23,25,.85)); }
+.bg, .thumb { --img: none; }
+.bg, .thumb {
+  background: var(--img) center/cover no-repeat, radial-gradient(circle, #3b404b 1.5px, transparent 2px) 0 0/10px 10px, #22252b;
+  filter: grayscale(1) contrast(1.1); transition: filter .3s;
+}
+.bg { position: absolute; inset: 0; }
+.img b { position: absolute; left: 1rem; bottom: 1rem; z-index: 2; font: 400 clamp(2.2rem, 4vw, 3.4rem)/.9 var(--display); text-transform: uppercase; }
+.cat:hover .img, .cat:focus-visible .img { transform: translate(-5px, -5px); box-shadow: 8px 8px 0 var(--blue); }
+.cat:hover .bg { filter: none; }
+.cap { display: flex; justify-content: space-between; padding-top: .9rem; font: 400 1.15rem var(--display); text-transform: uppercase; letter-spacing: 1px; }
+.cap i { font-style: normal; color: var(--blue-hi); transition: transform .2s; }
+.cat:hover .cap i { transform: translateX(6px); }
+
+/* ---------- página de categoria ---------- */
+.topo { padding: 3rem 0 .5rem; }
+.topo h2 { font: 400 clamp(3.2rem, 12vw, 8rem)/.9 var(--display); text-transform: uppercase; }
+.topo p { margin-top: .8rem; color: var(--blue-hi); font-weight: 700; }
+.tabs { display: flex; flex-wrap: wrap; gap: .7rem; margin: 1.4rem 0 2rem; }
+.tabs a { padding: .4rem 1.1rem; border: 2px solid var(--fg); font: 400 1.05rem var(--display); text-transform: uppercase; letter-spacing: 1px; }
+.tabs a:hover { border-color: var(--blue-hi); color: var(--blue-hi); }
+.tabs a.on { background: var(--fg); color: var(--bg); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; padding-bottom: 3.5rem; }
+.card { background: var(--panel); border: 2px solid var(--fg); padding: .8rem; transition: transform .15s, box-shadow .15s; }
+.card:hover { transform: translate(-4px, -4px); box-shadow: 7px 7px 0 var(--blue); }
+.card:hover .thumb { filter: none; }
+.thumb { aspect-ratio: 3/4; }
+.card h3 { margin: .9rem 0 .5rem; font: 400 1.4rem/1 var(--display); text-transform: uppercase; }
+.preco { display: inline-block; padding: .1rem .7rem; background: var(--blue); font: 400 1.4rem var(--display); transform: rotate(-2deg); }
+.tam { display: flex; flex-wrap: wrap; gap: .4rem; margin: .9rem 0 .6rem; }
+.tam span { min-width: 2rem; padding: .2rem .5rem; text-align: center; border: 2px solid var(--line); color: var(--mute); font-weight: 700; font-size: .8rem; }
+.estoque { color: var(--blue-hi); font-weight: 700; font-size: .8rem; }
+.card button {
+  margin-top: .9rem; width: 100%; padding: .8rem; border: 0; cursor: pointer;
+  background: var(--fg); color: var(--bg); font: 400 1.1rem var(--display); text-transform: uppercase; letter-spacing: 1px;
+  box-shadow: 4px 4px 0 var(--blue); transition: transform .15s, box-shadow .15s;
+}
+.card button:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--blue); }
+.vazio { grid-column: 1 / -1; color: var(--mute); }
+
+/* ---------- rodapé e contato ---------- */
+footer { padding: 1.6rem 0 5.5rem; text-align: center; border-top: 2px solid var(--fg); color: var(--mute); font: 400 1rem var(--display); text-transform: uppercase; letter-spacing: 2px; }
+.chat {
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 20; padding: .7rem 1.2rem;
+  background: var(--fg); color: var(--bg); font: 400 1rem var(--display); text-transform: uppercase; letter-spacing: 1px;
+  box-shadow: 4px 4px 0 var(--blue);
+}
+.chat:hover { background: var(--blue-hi); }
+
+@media (max-width: 900px) { .cats { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .sticker { width: 6rem; font-size: .9rem; top: 1rem; } }
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+  .faixa { animation: none; }
+  .tape { overflow-x: auto; }
+}

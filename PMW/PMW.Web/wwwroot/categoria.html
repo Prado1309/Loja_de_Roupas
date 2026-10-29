@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PMW | Coleção</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="/">PMW</a>
+    <nav>
+      <a href="/">início</a>
+      <a href="#">carrinho (<span class="cart-count">0</span>)</a>
+    </nav>
+  </header>
+
+  <div class="wrap">
+    <div class="topo">
+      <h2 id="titulo">coleção</h2>
+      <p id="qtd"></p>
+    </div>
+
+    <nav class="tabs">
+      <a data-c="camisetas" href="?c=camisetas">camisetas</a>
+      <a data-c="moletons" href="?c=moletons">moletons</a>
+      <a data-c="calcas" href="?c=calcas">calças</a>
+      <a data-c="acessorios" href="?c=acessorios">acessórios</a>
+    </nav>
+
+    <main id="produtos" class="grid"></main>
+  </div>
+
+  <footer>PMW · feito sob demanda</footer>
+  <a class="chat" href="https://wa.me/5500000000000" target="_blank" rel="noopener">fala com a gente</a>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
