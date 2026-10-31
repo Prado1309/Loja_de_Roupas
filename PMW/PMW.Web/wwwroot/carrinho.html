@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PMW | Carrinho</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="/">PMW</a>
+    <nav>
+      <a href="/">início</a>
+      <a href="/carrinho.html">carrinho (<span class="cart-count">0</span>)</a>
+    </nav>
+  </header>
+
+  <div class="wrap">
+    <div class="topo"><h2>carrinho</h2></div>
+
+    <div id="itens" class="itens"></div>
+
+    <aside id="resumo" class="resumo" hidden>
+      <p class="total">total <strong id="total">R$ 0,00</strong></p>
+      <button class="fechar" disabled>finalizar compra (em breve)</button>
+      <button class="limpar" onclick="clearCart()">esvaziar carrinho</button>
+    </aside>
+
+    <p class="voltar"><a href="/">← continuar comprando</a></p>
+  </div>
+
+  <footer>PMW · feito sob demanda</footer>
+  <script src="/js/app.js"></script>
+</body>
+</html>

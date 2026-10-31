@@ -122,3 +122,25 @@ footer { padding: 1.6rem 0 5.5rem; text-align: center; border-top: 2px solid var
   .faixa { animation: none; }
   .tape { overflow-x: auto; }
 }
+
+/* ---------- carrinho ---------- */
+.itens { display: grid; gap: 1.2rem; padding: 1.5rem 0; }
+.item { display: grid; grid-template-columns: 90px 1fr auto; gap: 1rem; align-items: center; background: var(--panel); border: 2px solid var(--fg); padding: .8rem; }
+.item .thumb { width: 90px; }
+.item h3 { font: 400 1.4rem/1 var(--display); text-transform: uppercase; margin-bottom: .3rem; }
+.qtd { display: flex; align-items: center; gap: .7rem; margin-top: .7rem; }
+.qtd button { width: 2.1rem; height: 2.1rem; border: 2px solid var(--fg); background: transparent; color: var(--fg); font: 400 1.2rem var(--display); cursor: pointer; }
+.qtd button:hover:not(:disabled) { background: var(--fg); color: var(--bg); }
+.qtd button:disabled { opacity: .35; cursor: not-allowed; }
+.sub { font: 400 1.5rem var(--display); }
+.resumo { max-width: 420px; margin: 0 0 2rem auto; padding: 1.2rem; border: 2px solid var(--fg); background: var(--panel); box-shadow: 6px 6px 0 var(--blue); }
+.resumo[hidden] { display: none; }
+.total { display: flex; justify-content: space-between; font: 400 1.5rem var(--display); text-transform: uppercase; margin-bottom: 1rem; }
+.resumo button { width: 100%; padding: .8rem; margin-top: .6rem; border: 2px solid var(--fg); font: 400 1.1rem var(--display); text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
+.fechar { background: var(--fg); color: var(--bg); }
+.fechar:disabled { opacity: .5; cursor: not-allowed; }
+.limpar { background: transparent; color: var(--fg); }
+.limpar:hover { border-color: var(--blue-hi); color: var(--blue-hi); }
+.voltar { padding-bottom: 3rem; font: 400 1.1rem var(--display); text-transform: uppercase; }
+.voltar a:hover { color: var(--blue-hi); }
+@media (max-width: 600px) { .item { grid-template-columns: 70px 1fr; } .item .thumb { width: 70px; } .sub { grid-column: 2; } }

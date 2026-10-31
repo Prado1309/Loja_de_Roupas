@@ -57,3 +57,62 @@ async function loadCategory() {
 
 updateCount();
 loadCategory();
+
+// ---------- página do carrinho ----------
+function saveCart(c) {
+  localStorage.setItem(CART_KEY, JSON.stringify(c));
+  updateCount();
+}
+function mais(id) { addToCart(id); loadCart(); }
+function menos(id) {
+  const c = getCart();
+  const i = c.indexOf(id);
+  if (i > -1) c.splice(i, 1);
+  saveCart(c);
+  loadCart();
+}
+function clearCart() { saveCart([]); loadCart(); }
+
+async function loadCart() {
+  const box = document.getElementById("itens");
+  if (!box) return;   // não estamos na página do carrinho
+  const resumo = document.getElementById("resumo");
+
+  const qtd = {};
+  getCart().forEach(id => qtd[id] = (qtd[id] || 0) + 1);
+  const ids = Object.keys(qtd).map(Number);
+
+  if (!ids.length) {
+    box.innerHTML = `<p class="vazio">seu carrinho está vazio.</p>`;
+    resumo.hidden = true;
+    return;
+  }
+
+  try {
+    const prods = await Promise.all(ids.map(id => fetch(`/api/products/${id}`).then(r => r.ok ? r.json() : null)));
+    let total = 0;
+    box.innerHTML = prods.filter(Boolean).map(p => {
+      const n = qtd[p.id];
+      total += p.price * n;
+      return `
+        <article class="item">
+          <div class="thumb" style="--img:url('${p.imageUrl}')"></div>
+          <div>
+            <h3>${p.name}</h3>
+            <p>${brl(p.price)}</p>
+            <div class="qtd">
+              <button onclick="menos(${p.id})" aria-label="tirar um">−</button>
+              <span>${n}</span>
+              <button onclick="mais(${p.id})" aria-label="adicionar mais um" ${n >= p.stock ? "disabled" : ""}>+</button>
+            </div>
+          </div>
+          <p class="sub">${brl(p.price * n)}</p>
+        </article>`;
+    }).join("");
+    document.getElementById("total").textContent = brl(total);
+    resumo.hidden = false;
+  } catch {
+    box.innerHTML = `<p class="vazio">não foi possível carregar o carrinho. confira se o servidor está rodando.</p>`;
+  }
+}
+loadCart();
