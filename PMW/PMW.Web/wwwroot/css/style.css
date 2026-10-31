@@ -178,3 +178,36 @@ footer { padding: 1.6rem 0 5.5rem; text-align: center; border-top: 2px solid var
 .card .ver:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--blue); }
 .tam-item { color: var(--blue-hi); font-weight: 700; }
 @media (max-width: 800px) { .produto { grid-template-columns: 1fr; } }
+
+/* ---------- checkout ---------- */
+.checkout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 2rem; align-items: start; padding: 1.5rem 0 4rem; }
+.form-pedido { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; }
+.form-pedido h3, .lateral h3 { grid-column: 1 / -1; font: 400 1.6rem var(--display); text-transform: uppercase; }
+.campo { grid-column: span 6; display: flex; flex-direction: column; gap: .35rem; }
+.campo.c1 { grid-column: span 1; } .campo.c2 { grid-column: span 2; } .campo.c3 { grid-column: span 3; } .campo.c4 { grid-column: span 4; }
+.campo label { font: 400 1rem var(--display); text-transform: uppercase; letter-spacing: 1px; }
+.campo input { padding: .75rem; background: var(--panel); border: 2px solid var(--line); color: var(--fg); font: 400 1rem var(--body); }
+.campo input:focus { border-color: var(--blue-hi); }
+.erro { grid-column: 1 / -1; color: #ff8a8a; font-weight: 700; }
+.enviar {
+  grid-column: 1 / -1; padding: 1rem; border: 0; cursor: pointer;
+  background: var(--fg); color: var(--bg); font: 400 1.3rem var(--display); text-transform: uppercase; letter-spacing: 1px;
+  box-shadow: 5px 5px 0 var(--blue);
+}
+.enviar:disabled { opacity: .5; cursor: wait; }
+.nota { grid-column: 1 / -1; color: var(--mute); font-size: .85rem; }
+.lateral { position: sticky; top: 5rem; padding: 1.2rem; background: var(--panel); border: 2px solid var(--fg); box-shadow: 6px 6px 0 var(--blue); }
+.lateral ul { list-style: none; display: grid; gap: .7rem; margin: 1rem 0; }
+.lateral li { display: flex; justify-content: space-between; gap: 1rem; }
+.lateral .t { display: flex; justify-content: space-between; padding-top: 1rem; border-top: 2px solid var(--line); font: 400 1.5rem var(--display); text-transform: uppercase; }
+.confirmado { grid-column: 1 / -1; display: grid; gap: 1rem; max-width: 560px; }
+.confirmado h3 { font: 400 clamp(2rem, 6vw, 3.5rem)/.9 var(--display); text-transform: uppercase; }
+.codigo { font: 400 2rem var(--display); letter-spacing: 3px; color: var(--blue-hi); }
+.status { display: inline-block; justify-self: start; padding: .2rem .8rem; background: var(--blue); font: 400 1.1rem var(--display); text-transform: uppercase; }
+.resumo .fechar { display: block; margin-top: .6rem; padding: .8rem; text-align: center; border: 2px solid var(--fg); font: 400 1.1rem var(--display); text-transform: uppercase; letter-spacing: 1px; }
+.resumo .fechar:hover { background: var(--blue-hi); border-color: var(--blue-hi); }
+@media (max-width: 800px) {
+  .checkout { grid-template-columns: 1fr; }
+  .campo.c1, .campo.c2, .campo.c3, .campo.c4 { grid-column: span 6; }
+  .lateral { position: static; order: -1; }
+}

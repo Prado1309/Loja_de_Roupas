@@ -176,7 +176,78 @@ async function loadCart() {
   }
 }
 
+
+// ---------- checkout ----------
+async function loadCheckout() {
+  const form = document.getElementById("form-pedido");
+  if (!form) return;
+
+  const cart = getCart();
+  if (!cart.length) { location.href = "/carrinho.html"; return; }
+
+  // agrupa unidades iguais em linhas { productId, size, quantity }
+  const grupos = {};
+  cart.forEach(i => {
+    const k = `${i.id}|${i.size}`;
+    grupos[k] = grupos[k] || { productId: i.id, size: i.size, quantity: 0 };
+    grupos[k].quantity++;
+  });
+  const itens = Object.values(grupos);
+
+  // resumo na lateral (o servidor recalcula o total de verdade ao criar o pedido)
+  const ids = [...new Set(itens.map(i => i.productId))];
+  const prods = await Promise.all(ids.map(id => fetch(`/api/products/${id}`).then(r => r.ok ? r.json() : null)));
+  const porId = {};
+  prods.filter(Boolean).forEach(p => porId[p.id] = p);
+  let total = 0;
+  document.getElementById("resumo-itens").innerHTML = itens.filter(i => porId[i.productId]).map(i => {
+    const p = porId[i.productId];
+    total += p.price * i.quantity;
+    return `<li><span>${i.quantity}× ${p.name} (${i.size})</span><span>${brl(p.price * i.quantity)}</span></li>`;
+  }).join("");
+  document.getElementById("resumo-total").textContent = brl(total);
+
+  const erroBox = document.getElementById("erro-pedido");
+  const btn = form.querySelector("button[type=submit]");
+
+  form.onsubmit = async e => {
+    e.preventDefault();
+    erroBox.textContent = "";
+    btn.disabled = true;
+    btn.textContent = "enviando...";
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...Object.fromEntries(new FormData(form)), items: itens })
+      });
+      const out = await res.json();
+      if (!res.ok) {
+        erroBox.innerHTML = (out.errors || ["Não foi possível criar o pedido."]).map(m => `<p>${m}</p>`).join("");
+        btn.disabled = false;
+        btn.textContent = "confirmar pedido";
+        return;
+      }
+      saveCart([]);
+      document.getElementById("checkout").innerHTML = `
+        <section class="confirmado">
+          <h3>pedido recebido!</h3>
+          <p class="codigo">${out.code}</p>
+          <p>total: <strong>${brl(out.total)}</strong></p>
+          <p class="status">${out.status}</p>
+          <p>guarde o código do pedido. o pagamento entra na próxima etapa da loja.</p>
+          <p><a class="btn" href="/">voltar para a loja</a></p>
+        </section>`;
+    } catch {
+      erroBox.textContent = "Erro de conexão. Confira se o servidor está rodando.";
+      btn.disabled = false;
+      btn.textContent = "confirmar pedido";
+    }
+  };
+}
+
 updateCount();
 loadCategory();
 loadProduct();
 loadCart();
+loadCheckout();

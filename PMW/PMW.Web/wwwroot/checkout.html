@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PMW | Finalizar pedido</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="/">PMW</a>
+    <nav>
+      <a href="/">início</a>
+      <a href="/carrinho.html">carrinho (<span class="cart-count">0</span>)</a>
+    </nav>
+  </header>
+
+  <div class="wrap">
+    <div class="topo"><h2>finalizar pedido</h2></div>
+
+    <div class="checkout" id="checkout">
+      <form id="form-pedido" class="form-pedido" novalidate>
+        <h3>seus dados</h3>
+        <div class="campo"><label for="name">nome completo</label><input id="name" name="name" autocomplete="name" required></div>
+        <div class="campo c3"><label for="email">e-mail</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+        <div class="campo c3"><label for="phone">telefone com DDD</label><input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" required></div>
+
+        <h3>entrega</h3>
+        <div class="campo c2"><label for="zip">CEP</label><input id="zip" name="zip" inputmode="numeric" maxlength="9" autocomplete="postal-code" required></div>
+        <div class="campo c4"><label for="street">rua</label><input id="street" name="street" autocomplete="address-line1" required></div>
+        <div class="campo c2"><label for="number">número</label><input id="number" name="number" required></div>
+        <div class="campo c4"><label for="complement">complemento (opcional)</label><input id="complement" name="complement"></div>
+        <div class="campo c2"><label for="district">bairro</label><input id="district" name="district" required></div>
+        <div class="campo c3"><label for="city">cidade</label><input id="city" name="city" autocomplete="address-level2" required></div>
+        <div class="campo c1"><label for="state">UF</label><input id="state" name="state" maxlength="2" autocomplete="address-level1" required></div>
+
+        <div class="erro" id="erro-pedido" role="alert"></div>
+        <button type="submit" class="enviar">confirmar pedido</button>
+        <p class="nota">usamos seus dados apenas para processar e entregar o pedido.</p>
+      </form>
+
+      <aside class="lateral">
+        <h3>resumo</h3>
+        <ul id="resumo-itens"></ul>
+        <p class="t">total <strong id="resumo-total">R$ 0,00</strong></p>
+      </aside>
+    </div>
+  </div>
+
+  <footer>PMW · feito sob demanda</footer>
+  <script src="/js/app.js"></script>
+</body>
+</html>
