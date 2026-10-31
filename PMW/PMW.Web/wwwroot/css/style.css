@@ -144,3 +144,37 @@ footer { padding: 1.6rem 0 5.5rem; text-align: center; border-top: 2px solid var
 .voltar { padding-bottom: 3rem; font: 400 1.1rem var(--display); text-transform: uppercase; }
 .voltar a:hover { color: var(--blue-hi); }
 @media (max-width: 600px) { .item { grid-template-columns: 70px 1fr; } .item .thumb { width: 70px; } .sub { grid-column: 2; } }
+
+/* ---------- página de produto ---------- */
+.produto { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2.5rem; align-items: start; padding: 2.5rem 0 4rem; }
+.foto { border: 2px solid var(--fg); box-shadow: 8px 8px 0 var(--blue); }
+.foto.thumb { filter: none; }
+.info h2 { margin: .6rem 0 1rem; font: 400 clamp(2.4rem, 6vw, 4.5rem)/.9 var(--display); text-transform: uppercase; }
+.info .preco { font-size: 1.8rem; }
+.info .voltar { padding: 0; font: 400 1rem var(--display); text-transform: uppercase; }
+.info .voltar a:hover { color: var(--blue-hi); }
+.desc { margin: 1.2rem 0; color: var(--mute); line-height: 1.5; }
+.rotulo { margin-bottom: .6rem; font: 400 1.1rem var(--display); text-transform: uppercase; letter-spacing: 1px; }
+.tamanhos { display: flex; flex-wrap: wrap; gap: .6rem; }
+.tm { min-width: 3.2rem; padding: .6rem 1rem; border: 2px solid var(--fg); background: transparent; color: var(--fg); font: 400 1.2rem var(--display); cursor: pointer; }
+.tm:hover { border-color: var(--blue-hi); color: var(--blue-hi); }
+.tm.on { background: var(--fg); color: var(--bg); }
+.aviso { min-height: 1.5rem; margin: .8rem 0; color: var(--blue-hi); font-weight: 700; }
+.comprar {
+  width: 100%; padding: 1rem; border: 0; cursor: pointer;
+  background: var(--fg); color: var(--bg); font: 400 1.3rem var(--display); text-transform: uppercase; letter-spacing: 1px;
+  box-shadow: 5px 5px 0 var(--blue); transition: transform .15s, box-shadow .15s;
+}
+.comprar:hover:not(:disabled) { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--blue); }
+.comprar:disabled { opacity: .5; cursor: not-allowed; }
+
+/* link "escolher tamanho" nos cards e tamanho no carrinho */
+.card h3 a:hover { color: var(--blue-hi); }
+.card .ver {
+  display: block; margin-top: .9rem; padding: .8rem; text-align: center;
+  background: var(--fg); color: var(--bg); font: 400 1.1rem var(--display); text-transform: uppercase; letter-spacing: 1px;
+  box-shadow: 4px 4px 0 var(--blue); transition: transform .15s, box-shadow .15s;
+}
+.card .ver:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--blue); }
+.tam-item { color: var(--blue-hi); font-weight: 700; }
+@media (max-width: 800px) { .produto { grid-template-columns: 1fr; } }

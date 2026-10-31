@@ -1,30 +1,31 @@
-// ---------- carrinho (salvo no navegador, não some ao recarregar) ----------
-const CART_KEY = "pmw-cart";
+// ---------- carrinho (salvo no navegador) ----------
+// v2: cada unidade no carrinho guarda { id, size } (produto + tamanho)
+const CART_KEY = "pmw-cart-v2";
 
 function getCart() {
   try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
   catch { return []; }
 }
-
+function saveCart(c) {
+  localStorage.setItem(CART_KEY, JSON.stringify(c));
+  updateCount();
+}
 function updateCount() {
   document.querySelectorAll(".cart-count").forEach(el => el.textContent = getCart().length);
 }
-
-function addToCart(id) {
-  const cart = getCart();
-  cart.push(id);
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  updateCount();
+function addToCart(id, size) {
+  const c = getCart();
+  c.push({ id, size });
+  saveCart(c);
 }
 
 const brl = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-// ---------- página de categoria ----------
 const NOMES = { camisetas: "camisetas", moletons: "moletons", calcas: "calças", acessorios: "acessórios" };
 
+// ---------- página de categoria ----------
 async function loadCategory() {
   const grid = document.getElementById("produtos");
-  if (!grid) return;   // não estamos na página de categoria
+  if (!grid) return;
 
   const slug = new URLSearchParams(location.search).get("c") || "camisetas";
   const nome = NOMES[slug] || slug;
@@ -42,12 +43,12 @@ async function loadCategory() {
     grid.innerHTML = lista.length
       ? lista.map(p => `
         <article class="card">
-          <div class="thumb" style="--img:url('${p.imageUrl}')"></div>
-          <h3>${p.name}</h3>
+          <a href="/produto.html?id=${p.id}"><div class="thumb" style="--img:url('${p.imageUrl}')"></div></a>
+          <h3><a href="/produto.html?id=${p.id}">${p.name}</a></h3>
           <p class="preco">${brl(p.price)}</p>
           <div class="tam">${p.sizes.split(",").map(t => `<span>${t}</span>`).join("")}</div>
           <p class="estoque">${p.stock <= 3 ? "últimas unidades" : p.stock + " em estoque"}</p>
-          <button onclick="addToCart(${p.id})">adicionar ao carrinho</button>
+          <a class="ver" href="/produto.html?id=${p.id}">escolher tamanho</a>
         </article>`).join("")
       : `<p class="vazio">nada em estoque nesta categoria por enquanto. veja as outras acima.</p>`;
   } catch {
@@ -55,18 +56,63 @@ async function loadCategory() {
   }
 }
 
-updateCount();
-loadCategory();
+// ---------- página de produto ----------
+async function loadProduct() {
+  const box = document.getElementById("produto");
+  if (!box) return;
+
+  const id = Number(new URLSearchParams(location.search).get("id"));
+  try {
+    const res = await fetch(`/api/products/${id}`);
+    if (!res.ok) throw new Error("não encontrado");
+    const p = await res.json();
+    document.title = `PMW | ${p.name}`;
+
+    const sizes = p.sizes.split(",");
+    const esgotado = p.stock <= 0;
+    let size = sizes.length === 1 ? sizes[0] : null;   // tamanho único já vem escolhido
+
+    box.innerHTML = `
+      <div class="foto thumb" style="--img:url('${p.imageUrl}')"></div>
+      <div class="info">
+        <p class="voltar"><a href="/categoria.html?c=${p.category}">← ${NOMES[p.category] || p.category}</a></p>
+        <h2>${p.name}</h2>
+        <p class="preco">${brl(p.price)}</p>
+        <p class="desc">${p.description}</p>
+        <p class="rotulo">tamanho</p>
+        <div class="tamanhos">${sizes.map(t => `<button type="button" class="tm" data-t="${t}">${t}</button>`).join("")}</div>
+        <p class="aviso" id="aviso"></p>
+        <button class="comprar" id="comprar" ${esgotado ? "disabled" : ""}>${esgotado ? "esgotado" : "adicionar ao carrinho"}</button>
+      </div>`;
+
+    const aviso = document.getElementById("aviso");
+    const botoes = document.querySelectorAll(".tm");
+    botoes.forEach(b => {
+      if (b.dataset.t === size) b.classList.add("on");
+      b.onclick = () => {
+        size = b.dataset.t;
+        botoes.forEach(x => x.classList.toggle("on", x === b));
+        aviso.textContent = "";
+      };
+    });
+
+    document.getElementById("comprar").onclick = () => {
+      if (!size) { aviso.textContent = "escolha um tamanho"; return; }
+      const jaNoCarrinho = getCart().filter(i => i.id === p.id).length;
+      if (jaNoCarrinho >= p.stock) { aviso.textContent = "você já tem todas as unidades em estoque no carrinho"; return; }
+      addToCart(p.id, size);
+      aviso.textContent = `adicionado: ${p.name} (${size})`;
+    };
+  } catch {
+    box.innerHTML = `<p class="vazio">produto não encontrado. <a href="/">voltar para a home</a></p>`;
+  }
+}
 
 // ---------- página do carrinho ----------
-function saveCart(c) {
-  localStorage.setItem(CART_KEY, JSON.stringify(c));
-  updateCount();
-}
-function mais(id) { addToCart(id); loadCart(); }
-function menos(id) {
+function addOne(id, size) { addToCart(id, size); loadCart(); }
+function removeOne(id, size) {
   const c = getCart();
-  const i = c.indexOf(id);
+  const i = c.findIndex(x => x.id === id && x.size === size);
   if (i > -1) c.splice(i, 1);
   saveCart(c);
   loadCart();
@@ -75,38 +121,52 @@ function clearCart() { saveCart([]); loadCart(); }
 
 async function loadCart() {
   const box = document.getElementById("itens");
-  if (!box) return;   // não estamos na página do carrinho
+  if (!box) return;
   const resumo = document.getElementById("resumo");
+  const cart = getCart();
 
-  const qtd = {};
-  getCart().forEach(id => qtd[id] = (qtd[id] || 0) + 1);
-  const ids = Object.keys(qtd).map(Number);
-
-  if (!ids.length) {
+  const vazio = () => {
     box.innerHTML = `<p class="vazio">seu carrinho está vazio.</p>`;
     resumo.hidden = true;
-    return;
-  }
+  };
+  if (!cart.length) return vazio();
 
   try {
+    const ids = [...new Set(cart.map(i => i.id))];
     const prods = await Promise.all(ids.map(id => fetch(`/api/products/${id}`).then(r => r.ok ? r.json() : null)));
+    const porId = {};
+    prods.filter(Boolean).forEach(p => porId[p.id] = p);
+
+    // agrupa unidades iguais (mesmo produto e mesmo tamanho)
+    const grupos = {};
+    cart.forEach(i => {
+      if (!porId[i.id]) return;
+      const k = `${i.id}|${i.size}`;
+      grupos[k] = grupos[k] || { id: i.id, size: i.size, n: 0 };
+      grupos[k].n++;
+    });
+    const lista = Object.values(grupos);
+    if (!lista.length) return vazio();
+
     let total = 0;
-    box.innerHTML = prods.filter(Boolean).map(p => {
-      const n = qtd[p.id];
-      total += p.price * n;
+    box.innerHTML = lista.map(g => {
+      const p = porId[g.id];
+      const noCarrinho = cart.filter(i => i.id === g.id).length;   // estoque é por produto
+      total += p.price * g.n;
       return `
         <article class="item">
           <div class="thumb" style="--img:url('${p.imageUrl}')"></div>
           <div>
             <h3>${p.name}</h3>
+            <p class="tam-item">tamanho ${g.size}</p>
             <p>${brl(p.price)}</p>
             <div class="qtd">
-              <button onclick="menos(${p.id})" aria-label="tirar um">−</button>
-              <span>${n}</span>
-              <button onclick="mais(${p.id})" aria-label="adicionar mais um" ${n >= p.stock ? "disabled" : ""}>+</button>
+              <button onclick="removeOne(${p.id}, '${g.size}')" aria-label="tirar um">−</button>
+              <span>${g.n}</span>
+              <button onclick="addOne(${p.id}, '${g.size}')" aria-label="adicionar mais um" ${noCarrinho >= p.stock ? "disabled" : ""}>+</button>
             </div>
           </div>
-          <p class="sub">${brl(p.price * n)}</p>
+          <p class="sub">${brl(p.price * g.n)}</p>
         </article>`;
     }).join("");
     document.getElementById("total").textContent = brl(total);
@@ -115,4 +175,8 @@ async function loadCart() {
     box.innerHTML = `<p class="vazio">não foi possível carregar o carrinho. confira se o servidor está rodando.</p>`;
   }
 }
+
+updateCount();
+loadCategory();
+loadProduct();
 loadCart();
